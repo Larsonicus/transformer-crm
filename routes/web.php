@@ -23,4 +23,6 @@ Route::view('profile', 'profile')
     ->middleware(['auth'])
     ->name('profile');
 
+Route::get('task-list', \App\Livewire\TaskList::class)->name('task-list');
+
 require __DIR__.'/auth.php';
