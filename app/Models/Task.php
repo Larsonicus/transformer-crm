@@ -5,30 +5,28 @@ namespace App\Models;
 use App\Enums\TaskStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Task extends Model
 {
     use HasFactory;
 
-    const TABLE = 'tasks';
-
-    protected $table = self::TABLE;
-
-    protected $fillable = [
-        "title",
-        "description",
-        "assigned_to",
-        "due_date",
-        "status",
-    ];
+    protected $fillable = ['name', 'description', 'status', 'order'];
 
     protected $casts = [
         'status' => TaskStatus::class,
     ];
 
-    public function user(): BelongsTo
+    // Добавим константы для статусов
+    const STATUS_PENDING = 'pending';
+    const STATUS_IN_PROGRESS = 'in_progress';
+    const STATUS_COMPLETED = 'completed';
+
+    public static function statuses()
     {
-        return $this->belongsTo(User::class);
+        return [
+            self::STATUS_PENDING => 'В ожидании',
+            self::STATUS_IN_PROGRESS => 'В работе',
+            self::STATUS_COMPLETED => 'Завершено',
+        ];
     }
 }

@@ -40,6 +40,28 @@ new class extends Component
                         {{ __('TaskList') }}
                     </x-nav-link>
                 </div>
+
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link :href="route('requests.index')" :active="request()->routeIs('requests.index')" wire:navigate>
+                        {{ __('Requests') }}
+                    </x-nav-link>
+                </div>
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')" wire:navigate>
+                        {{ __('Users') }}
+                    </x-nav-link>
+                </div>
+
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link :href="route('partners.index')" :active="request()->routeIs('partners.index')" wire:navigate>
+                        {{ __('Partners') }}
+                    </x-nav-link>
+                </div>
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link :href="route('sources.index')" :active="request()->routeIs('sources.index')" wire:navigate>
+                        {{ __('Sources') }}
+                    </x-nav-link>
+                </div>
             </div>
 
             <!-- Settings Dropdown -->
