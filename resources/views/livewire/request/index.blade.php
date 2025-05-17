@@ -4,7 +4,16 @@
         <a href="{{ route('requests.create') }}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
             Создать заявку
         </a>
+
+        <button wire:click="importRequest">Import</button>
+        <button wire:click="exportRequest">Export</button>
     </div>
+
+    <form wire:submit="save">
+        <input type="file" wire:model.change="excelFile">
+
+        @error('photo') <span class="error">{{ $message }}</span> @enderror
+    </form>
 
     @if(session('success'))
         <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
@@ -48,8 +57,11 @@
                     </td>
                     <td class="px-6 py-4">{{ $request->created_at->format('d.m.Y H:i') }}</td>
                     <td class="px-6 py-4 space-x-2">
+                        @can('read request')
                         <a href="{{ route('requests.show', $request) }}"
                            class="text-blue-500 hover:text-blue-700">Просмотр</a>
+                        @endcan
+
                         <a href="{{ route('requests.edit', $request) }}"
                            class="text-green-500 hover:text-green-700">Редактировать</a>
                         <button wire:click="delete({{ $request->id }})"
