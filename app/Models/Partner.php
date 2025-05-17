@@ -15,4 +15,9 @@ class Partner extends Model
     {
         return $this->hasMany(Request::class);
     }
+
+    public function tasks()
+    {
+        return $this->hasMany(Task::class);
+    }
 }

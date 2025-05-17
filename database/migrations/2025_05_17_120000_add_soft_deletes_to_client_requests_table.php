@@ -9,14 +9,10 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('partners', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('contact_email');
-            $table->string('phone')->nullable();
-            $table->timestamps();
+        Schema::table('client_requests', function (Blueprint $table) {
+            $table->softDeletes();
         });
     }
 
@@ -25,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('partners');
+        Schema::table('client_requests', function (Blueprint $table) {
+            $table->dropSoftDeletes();
+        });
     }
-};
+}; 

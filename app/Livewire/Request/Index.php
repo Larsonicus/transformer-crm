@@ -2,21 +2,19 @@
 
 namespace App\Livewire\Request;
 
-use App\Exports\ClientRequestExport;
-use App\Models\ClientRequest;
+use App\Services\Contracts\RequestServiceInterface;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
-use App\Models\ClientRequestImport;
-use Maatwebsite\Excel\Facades\Excel;
 
 class Index extends Component
 {
     use WithPagination;
     use WithFileUploads;
 
-    public $excelFile;
+    private RequestServiceInterface $requestService;
 
+    public $excelFile;
     public $search = '';
     public $perPage = 10;
 
@@ -25,29 +23,50 @@ class Index extends Component
         'perPage' => ['except' => 10]
     ];
 
-    public function delete($id)
+    public function mount(RequestServiceInterface $requestService)
     {
-        ClientRequest::find($id)->delete();
-        session()->flash('success', 'Заявка удалена');
+        $this->requestService = $requestService;
     }
 
-    public function importRequest() {
-        Excel::import(new ClientRequestImport, $this->excelFile);
+    public function delete($id)
+    {
+        if ($this->requestService->deleteRequest($id)) {
+            session()->flash('success', 'Заявка удалена');
+        } else {
+            session()->flash('error', 'Не удалось удалить заявку');
+        }
+    }
+
+    public function importRequest()
+    {
+        try {
+            $this->requestService->importFromExcel($this->excelFile);
+            session()->flash('success', 'Данные успешно импортированы');
+        } catch (\Exception $e) {
+            session()->flash('error', 'Ошибка при импорте данных: ' . $e->getMessage());
+        }
 
         $this->excelFile = null;
     }
 
     public function exportRequest()
     {
-        return Excel::download(new ClientRequestExport(), 'requests.xlsx');
+        try {
+            return response()->download(
+                $this->requestService->exportToExcel(),
+                'requests.xlsx'
+            );
+        } catch (\Exception $e) {
+            session()->flash('error', 'Ошибка при экспорте данных: ' . $e->getMessage());
+        }
     }
 
     public function render()
     {
-        $requests = ClientRequest::with(['user', 'partner', 'source'])
-            ->when($this->search, fn($q) => $q->where('title', 'like', "%{$this->search}%"))
-            ->latest()
-            ->paginate($this->perPage);
+        $requests = $this->requestService->getPaginatedRequests(
+            search: $this->search,
+            perPage: $this->perPage
+        );
 
         return view('livewire.request.index', compact('requests'));
     }

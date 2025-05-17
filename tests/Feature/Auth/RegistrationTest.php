@@ -6,6 +6,7 @@ use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Volt\Volt;
 use Tests\TestCase;
+use App\Models\User;
 
 class RegistrationTest extends TestCase
 {
@@ -33,5 +34,9 @@ class RegistrationTest extends TestCase
         $component->assertRedirect(RouteServiceProvider::HOME);
 
         $this->assertAuthenticated();
+
+        // Проверяем, что пользователю назначена роль "partner"
+        $user = User::where('email', 'test@example.com')->first();
+        $this->assertTrue($user->hasRole('partner'));
     }
 }
