@@ -1,18 +1,18 @@
 <div class="p-4" x-data>
     <!-- Notifications -->
     @if($successMessage)
-        <div class="mb-4 p-4 bg-green-100 text-green-700 rounded-lg" 
-             x-data="{ show: true }" 
-             x-show="show" 
+        <div class="mb-4 p-4 bg-green-100 text-green-700 rounded-lg"
+             x-data="{ show: true }"
+             x-show="show"
              x-init="setTimeout(() => show = false, 3000)">
             {{ $successMessage }}
         </div>
     @endif
 
     @if($errorMessage)
-        <div class="mb-4 p-4 bg-red-100 text-red-700 rounded-lg" 
-             x-data="{ show: true }" 
-             x-show="show" 
+        <div class="mb-4 p-4 bg-red-100 text-red-700 rounded-lg"
+             x-data="{ show: true }"
+             x-show="show"
              x-init="setTimeout(() => show = false, 3000)">
             {{ $errorMessage }}
         </div>
@@ -28,12 +28,12 @@
                         {{ isset($tasks[$status]) ? count($tasks[$status]) : 0 }} задач
                     </span>
                 </div>
-                
-                <div class="task-list space-y-3 min-h-[200px] p-2 rounded-lg transition-colors duration-200" 
+
+                <div class="task-list space-y-3 min-h-[200px] p-2 rounded-lg transition-colors duration-200"
                      data-status="{{ $status }}">
                     @if(isset($tasks[$status]))
                         @foreach($tasks[$status] as $task)
-                            <div class="task-item bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 cursor-move border border-gray-100 transform hover:scale-[1.02] active:scale-[1.01]" 
+                            <div class="task-item bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 cursor-move border border-gray-100 transform hover:scale-[1.02] active:scale-[1.01]"
                                  data-task-id="{{ $task->id }}">
                                 <div class="flex justify-between items-start mb-2">
                                     <h4 class="font-medium text-gray-900">{{ $task->title }}</h4>
@@ -50,9 +50,9 @@
                                         @endif
                                     </div>
                                 </div>
-                                
+
                                 <p class="text-sm text-gray-600 mb-3">{{ Str::limit($task->description, 100) }}</p>
-                                
+
                                 <div class="flex justify-between items-center text-sm">
                                     <div class="flex items-center gap-2">
                                         @if($task->assignedUser)
@@ -64,7 +64,7 @@
                                             </span>
                                         @endif
                                     </div>
-                                    
+
                                     @if($task->partner)
                                         <span class="inline-flex items-center px-2 py-1 rounded-full bg-gray-50 text-gray-600">
                                             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -98,14 +98,14 @@ if (typeof Sortable === 'undefined') {
 
 function initializeSortable() {
     const lists = document.querySelectorAll('.task-list');
-    
+
     lists.forEach(list => {
         new Sortable(list, {
             group: 'tasks',
             handle: '.task-item',
             animation: 150,
             ghostClass: 'opacity-50',
-            dragClass: 'shadow-xl scale-105',
+            dragClass: 'task-item',
             chosenClass: 'bg-gray-100',
             scroll: true,
             scrollSensitivity: 80,
@@ -120,12 +120,12 @@ function initializeSortable() {
                 const taskId = evt.item.dataset.taskId;
                 const newStatus = evt.to.dataset.status;
                 const order = evt.newIndex;
-                
+
                 lists.forEach(list => {
                     list.classList.remove('bg-blue-50');
                 });
                 evt.item.classList.remove('rotating-cursor');
-                
+
                 // Вызываем метод Livewire
                 Livewire.find(evt.to.closest('[wire\\:id]').getAttribute('wire:id'))
                     .call('updateTaskStatus', taskId, newStatus, order);
@@ -172,4 +172,4 @@ window.addEventListener('task-updated', event => {
     });
 });
 </script>
-@endpush 
+@endpush
